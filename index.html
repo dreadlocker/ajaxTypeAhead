@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Ajax Type Ahead</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js"></script>
   </head>
 
   <body>
@@ -13,102 +15,5 @@
       <input type="text" id="input" placeholder="Type at least 3 letters" autofocus />
       <ol id="results"></ol>
     </div>
-
-    <script>
-      const url = "https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json";
-      const allPlacesArr = [];
-
-      (function getAllPlaces(arr) {
-        fetch(url) // get data asynchronously
-          .then(promise => promise.json())
-          .then(data => arr.push(...data)); // data === array with objects
-      })(allPlacesArr); // IIFE to get the needed data
-
-      function findMatched(word, searchInArr) {
-        const regex = new RegExp(word, "g");
-        return searchInArr.filter(place => place.city.match(regex) || place.state.match(regex));
-      }
-
-      const resultsContainer = document.getElementById("results");
-      function renderResult() {
-        if (this.value.length < 3) return (resultsContainer.innerHTML = "");
-        
-        const html = findMatched(this.value, allPlacesArr) // returns an array
-          .map(place => {
-            const city = place.city.replace(this.value, `<span class="highLight">${this.value}</span>`)
-            // add span to highlight user typed letters in the result
-            const state = place.state.replace(this.value, `<span class="highLight">${this.value}</span>`)
-
-            return `<li>${city}, ${state} <span class="right">${place.population}</span></li>`;
-          })
-          .join(""); // make html a string
-
-        resultsContainer.innerHTML = html; // insert the result in the DOM
-      }
-
-      const userInput = document.getElementById("input");
-      userInput.addEventListener("keyup", renderResult);
-    </script>
-
-    <style>
-      body,
-      html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-      }
-
-      #wrapper {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        width: 90%;
-        margin: auto;
-        align-items: center;
-      }
-
-      input {
-        width: 50%;
-        margin-bottom: 1em;
-      }
-
-      ol {
-        width: 46%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        padding: 0;
-        margin: 0;
-      }
-
-      li {
-        width: 100%;
-      }
-
-      .right {
-        float: right;
-      }
-
-      .highLight {
-        background-color: #bada55;
-      }
-
-      @media only screen and (min-width: 1024px) {
-        ol {
-          width: 20em;
-        }
-      }
-
-      @media only screen and (max-width: 700px) {
-        #input {
-          width: 90%;
-        }
-
-        ol {
-          width: 82%;
-        }
-      }
-    </style>
   </body>
 </html>
